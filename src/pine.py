@@ -62,7 +62,7 @@ class Circle:
         for py in range(y_min, y_max):
             for px in range(x_min, x_max):
                 if (px - self.x) ** 2 + (py - self.y) ** 2 <= self.r ** 2:
-                    im.set_color(py, px, self.color)
+                    im.set_color(px, py, self.color)
 
 @dataclass
 class Line:
@@ -97,6 +97,21 @@ class Line:
                 error += dx
                 y += sy
 
+    def _slope(self) -> int | None:
+        try:
+            return (self.y2 - self.y1) / (self.x2 - self.x1)
+        except ZeroDivisionError as e:
+            print("WARNING: Attempted to calculate the slope of a vertical line.")
+            return None
+
+    def _intercept(self) -> int | None:
+        if self._slope() is None:
+            return None
+        return self.y1 - self._slope() * self.x1
+
+    def __call__(self, x: int) -> int:
+        return self._slope() * x + self._intercept()
+
 
 @dataclass
 class Triangle:
@@ -106,17 +121,44 @@ class Triangle:
     y2: int
     x3: int
     y3: int
-    color: int
+    color: int = 0xAAFFAA
     _lines: list[Line] = None
 
     def __post_init__(self) -> None:
         self._lines = [
             Line(self.x1, self.y1, self.x2, self.y2, self.color),
             Line(self.x2, self.y2, self.x3, self.y3, self.color),
-            # Line(self.x3, self.y3, self.x1, self.y1, self.color),
+            Line(self.x3, self.y3, self.x1, self.y1, self.color),
         ]
 
     def draw(self, im: Image) -> None:
         for line in self._lines: 
             line.draw(im)
+        
+        # Render the inside.
+        x_min, *_, x_max = sorted((self.x1, self.x2, self.x3))
+        y_min, *_, y_max = sorted((self.y1, self.y2, self.y3))
+
+        for py in range(y_min, y_max):
+            for px in range(x_min, x_max):
+                if self._is_point_inside(px, py):
+                    im.set_color(px, py, self.color)
+
+    # def _area(self) -> None:
+    #     # Area is actually half this. Only used for queries.
+    #     return abs(
+    #           self.x1 * (self.y2 - self.y3)
+    #         + self.x2 * (self.y3 - self.y1)
+    #         + self.x3 * (self.y1 - self.y3)
+    #     )
+    
+    def _is_point_inside(self, x: int, y: int) -> bool:
+        a_num = (self.y3 - self.y1) * (x - self.x1) + (self.y1 - y) * (self.x3 - self.x1)
+        b_num = (self.y2 - self.y1) * (x - self.x1) + (self.y1 - y) * (self.x2 - self.x1)
+        dem = (self.x2 - self.x1) * (self.y3 - self.y1) - (self.y2 - self.y1) * (self.x3 - self.x1)
+
+        a = a_num / dem
+        b = -b_num / dem
+
+        return ( a > 0 and b > 0 and a + b < 1 )
 
