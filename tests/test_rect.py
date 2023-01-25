@@ -16,12 +16,13 @@ sys.path.append(
 
 import pine
 
-SCREEN_WIDTH = 4
-SCREEN_HEIGHT = 4
+SCREEN_WIDTH = 16
+SCREEN_HEIGHT = 16
 
 
 def create_artificial_image(w: int, h: int) -> list[int]:
     return [0 for _ in range(w * h)]
+
 
 @pytest.mark.parametrize(
     ("x", "y", "width", "height"),
