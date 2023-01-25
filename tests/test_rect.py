@@ -1,11 +1,7 @@
 import os 
 import sys
 
-import functools
-
-from typing import Callable
-from typing import ParamSpec
-from typing import TypeVar
+import pytest
 
 CPD = os.path.abspath(
     os.path.join(
@@ -20,28 +16,32 @@ sys.path.append(
 
 import pine
 
-from config_tests import *
+SCREEN_WIDTH = 4
+SCREEN_HEIGHT = 4
 
-@test_wrapper
+
+def create_artificial_image(w: int, h: int) -> list[int]:
+    return [0 for _ in range(w * h)]
+
+@pytest.mark.parametrize(
+    ("x", "y", "width", "height"),
+    [
+        (0, 0, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2),
+        (2, 4, 3, 4)
+    ] 
+)
 def test_rectangle(x: int, y: int, width: int, height: int) -> int:
     # Color format: RGBA.
     im = pine.Image((SCREEN_WIDTH, SCREEN_HEIGHT))
     rect_1 = pine.Rectangle(x, y, width, height, 0xFF0000)
     rect_1.draw(im)
-    im.render(
-        os.path.join(
-            TEST_RESULTS_DIR,
-            f"rect.ppm"
-        )
-    )
 
+    a_im = create_artificial_image(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-def main() -> int:
-    test_rectangle(0, 0, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-    return 0
+    for j in range(y, min(y + height, SCREEN_HEIGHT)):
+        for i in range(x, min(x + width, SCREEN_WIDTH)):
+            a_im[j * SCREEN_WIDTH + i] = 0xFF0000
 
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+    assert a_im == im.get_pixel_data()
 
 
