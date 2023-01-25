@@ -1,3 +1,5 @@
+import sys
+
 import copy 
 
 from typing import Generator 
@@ -81,6 +83,7 @@ class Circle:
                 if (px - self.x) ** 2 + (py - self.y) ** 2 <= self.r ** 2:
                     im.set_color(px, py, self.color)
 
+
 @dataclass
 class Line:
     x1: int
@@ -118,7 +121,7 @@ class Line:
         try:
             return (self.y2 - self.y1) / (self.x2 - self.x1)
         except ZeroDivisionError as e:
-            print("WARNING: Attempted to calculate the slope of a vertical line.")
+            print("WARNING: Attempted to calculate the slope of a vertical line.", file = sys.stderr)
             return None
 
     def _intercept(self) -> int | None:
