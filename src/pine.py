@@ -10,6 +10,9 @@ class Image:
         self.width, self.height = size
         self.image = [0 for _ in range(self.width * self.height)]
 
+    def get_pixel_data(self) -> list[int]:
+        return self.image
+
     def set_color(self, row: int, col: int, color: int) -> None:
         self.image[col * self.width + row] = color
 
@@ -32,6 +35,20 @@ class Image:
             for pixel in self.image_view():
                 r, g, b = (pixel >> 8 * 2) & 0xFF, (pixel >> 8 * 1) & 0xFF, (pixel >> 8 * 0) & 0xFF
                 f.write(f"{r} {g} {b}\n")
+
+    def __len__(self) -> int:
+        return len(self.image)
+
+    def __eq__(self, other: "Self") -> bool:
+        # Check for image length (all pixels.)
+        if len(self) != len(other):
+            return False
+
+        # Check if pixel values are the same.
+        for pixel_1, pixel_2 in zip(self.image_view(), other.image_view(), strict = True):
+            if pixel_1 != pixel_2:
+                return False
+        return True
 
 
 @dataclass
