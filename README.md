@@ -2,6 +2,9 @@
 
 A 2D graphics library in pure Python.
 
+## CI
+![test](https://github.com/anirudhbhashyam/pine/actions/workflows/test.yml/badge.svg)
+
 # Usage
 
 See `examples` directory.
