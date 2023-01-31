@@ -3,6 +3,8 @@ import sys
 import copy 
 
 from typing import Generator 
+from typing import Iterable 
+from typing import Self 
 
 from dataclasses import dataclass
 
@@ -12,10 +14,31 @@ class Image:
         self.width, self.height = size
         self.image = [0 for _ in range(self.width * self.height)]
 
+    @classmethod
+    def from_file(cls, file: str) -> Self:
+        file_gen = cls._read_ppm_file(file)
+        width, height = next(file_gen)
+        im = cls((width, height))
+        im.image = [cls.pack_rgb(s) for s in file_gen]
+        return im
+    
+    @classmethod
+    def from_data(cls, width: int, height: int, data: list[int]) -> Self:
+        im = cls((width, height))
+        im.image = data
+        return im
+
+    @staticmethod
+    def pack_rgb(color: Iterable[int]) -> int:
+        r, g, b, *_ = color
+        return ((r & 0xFF) << 8 * 2) + ((g & 0xFF) << 8 * 1) + ((b & 0xFF) << 8 * 0)
+
     def get_pixel_data(self) -> list[int]:
         return self.image
 
     def set_color(self, row: int, col: int, color: int) -> None:
+        if (row < 0 or row >= self.width or col < 0 or col >= self.height):
+            return
         self.image[col * self.width + row] = color
 
     def image_view(self) -> Generator[int, None, None]:
@@ -51,6 +74,18 @@ class Image:
             if pixel_1 != pixel_2:
                 return False
         return True
+    
+    @staticmethod
+    def _read_ppm_file(file: str) -> Generator[int, None, None]:
+         with open(file, "r") as f:
+            # Skip the P3 header.
+            next(f)
+            width, height = map(int, next(f).split(" "))
+            yield width, height
+            # Skip the bit depth.
+            next(f)
+            for pixel in f:
+                yield [int(x) for x in pixel.split(" ")]
 
 
 @dataclass
