@@ -1,6 +1,8 @@
 import os 
 import sys
 
+from typing import NoReturn
+
 import pytest
 
 CPD = os.path.abspath(
@@ -31,7 +33,7 @@ def create_artificial_image(w: int, h: int) -> list[int]:
         (2, 4, 3, 4)
     ] 
 )
-def test_rectangle(x: int, y: int, width: int, height: int) -> int:
+def test_rectangle(x: int, y: int, width: int, height: int) -> NoReturn:
     # Color format: RGBA.
     im = pine.Image((SCREEN_WIDTH, SCREEN_HEIGHT))
     rect_1 = pine.Rectangle(x, y, width, height, 0xFF0000)
