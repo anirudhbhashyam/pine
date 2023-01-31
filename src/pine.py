@@ -8,7 +8,9 @@ from typing import Iterable
 try:
     from typing import Self
 except ImportError:
-    Self = "Self"
+    from typing import TypeVar
+    Self = TypeVar("Self")
+    
 
 from dataclasses import dataclass
 
