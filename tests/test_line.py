@@ -18,7 +18,13 @@ sys.path.append(
 
 import pine
 
-TEST_FIGS_DIR = "./test_figs"
+TEST_FIGS_DIR = os.path.abspath(
+    os.path.join(
+        os.path.abspath(__file__),
+        *(1 * [os.pardir]),
+        "test_figs"
+    )
+)
 
 
 def test_lines() -> NoReturn:
