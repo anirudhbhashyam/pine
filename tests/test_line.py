@@ -18,7 +18,7 @@ sys.path.append(
 
 import pine
 
-TEST_FIGS_DIR = "test_figs"
+TEST_FIGS_DIR = "./test_figs"
 
 
 def test_lines() -> NoReturn:
