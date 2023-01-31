@@ -3,8 +3,12 @@ import sys
 import copy 
 
 from typing import Generator 
-from typing import Iterable 
-from typing import Self 
+from typing import Iterable
+
+try:
+    from typing import Self
+except ImportError:
+    Self = "Self"
 
 from dataclasses import dataclass
 
