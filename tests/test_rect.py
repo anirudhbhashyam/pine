@@ -45,6 +45,6 @@ def test_rectangle(x: int, y: int, width: int, height: int) -> NoReturn:
         for i in range(x, min(x + width, SCREEN_WIDTH)):
             a_im[j * SCREEN_WIDTH + i] = 0xFF0000
 
-    assert a_im == im.get_pixel_data()
+    assert a_im == im.pixel_data
 
 
