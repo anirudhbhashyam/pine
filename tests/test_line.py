@@ -27,7 +27,7 @@ TEST_FIGS_DIR = os.path.abspath(
 )
 
 
-def test_lines() -> NoReturn:
+def test_line() -> NoReturn:
     lines_im = pine.Image.from_file(os.path.join(TEST_FIGS_DIR, "lines.ppm"))
     image_width, image_height = lines_im.width, lines_im.height
     im = pine.Image((image_width, image_height))
