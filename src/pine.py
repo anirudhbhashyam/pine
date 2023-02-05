@@ -10,7 +10,6 @@ try:
 except ImportError:
     from typing import TypeVar
     Self = TypeVar("Self")
-    
 
 from dataclasses import dataclass
 
@@ -39,7 +38,8 @@ class Image:
         r, g, b, *_ = color
         return ((r & 0xFF) << 8 * 2) + ((g & 0xFF) << 8 * 1) + ((b & 0xFF) << 8 * 0)
 
-    def get_pixel_data(self) -> list[int]:
+    @property
+    def pixel_data(self) -> list[int]:
         return self.image
 
     def set_color(self, row: int, col: int, color: int) -> None:
