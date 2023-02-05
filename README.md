@@ -19,3 +19,7 @@ See `examples` directory.
 # References
 - Line drawing: https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 - Triangle interior: https://mathworld.wolfram.com/TriangleInterior.html
+
+# TODO
+1. Tests for triangles.
+2. Colour blending.
