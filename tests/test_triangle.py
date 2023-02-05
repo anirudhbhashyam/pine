@@ -16,9 +16,16 @@ sys.path.append(
     os.path.join(CPD, "src")
 )
 
-TEST_FIGS_DIR = "test_figs"
-
 import pine
+
+TEST_FIGS_DIR = os.path.abspath(
+    os.path.join(
+        CPD,
+        "tests",
+        "test_figs"
+    )
+)
+
 
 
 def test_triangle() -> NoReturn:

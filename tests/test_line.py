@@ -20,8 +20,8 @@ import pine
 
 TEST_FIGS_DIR = os.path.abspath(
     os.path.join(
-        os.path.abspath(__file__),
-        *(1 * [os.pardir]),
+        CPD,
+        "tests",
         "test_figs"
     )
 )
