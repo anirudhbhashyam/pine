@@ -38,8 +38,22 @@ def generate_line_cases() -> None:
     im.render(os.path.join(TEST_FIGS_DIR, "lines.ppm"))
 
 
+def generate_triangle_cases() -> None:
+    im = pine.Image((IMAGE_WIDTH, IMAGE_HEIGHT))
+    t1 = pine.Triangle(0, 0, 0, IMAGE_WIDTH, IMAGE_WIDTH // 2, IMAGE_HEIGHT, 0xAAFFEE)
+    t2 = pine.Triangle(IMAGE_WIDTH, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH // 2, IMAGE_HEIGHT, 0xBBFFBB)
+    t3 = pine.Triangle(IMAGE_WIDTH // 2, 0, IMAGE_WIDTH // 2 - 100, 0, IMAGE_WIDTH // 2 - 50, 100, 0xFFBBBB)
+    t4 = pine.Triangle(IMAGE_WIDTH // 2, 0, IMAGE_WIDTH // 2 + 100, 0, IMAGE_WIDTH // 2 + 50, 100, 0xFFBBFF)
+    t1.draw(im)
+    t2.draw(im)
+    t3.draw(im)
+    t4.draw(im)
+    im.render(os.path.join(TEST_FIGS_DIR, "triangles.ppm"))
+
+
 def main() -> int:
     generate_line_cases()
+    generate_triangle_cases()
     return 0
 
 
