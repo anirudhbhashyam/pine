@@ -35,9 +35,26 @@ class Image:
 
     @staticmethod
     def pack_rgb(color: Iterable[int]) -> int:
-        r, g, b, *_ = color
-        return ((r & 0xFF) << 8 * 2) + ((g & 0xFF) << 8 * 1) + ((b & 0xFF) << 8 * 0)
+        # The little endian format is ABGR.
+        a, b, g, r = color
+        return ((a & 0xFF) << 8 * 3) | ((b & 0xFF) << 8 * 2) | ((g & 0xFF) << 8 * 1) | ((r & 0xFF) << 8 * 0)
 
+    @staticmethod
+    def unpack_color(color: int) -> tuple[int, int, int, int]:
+        # The returned tuple will be of the form ABGR.
+        return (
+            (color >> 8 * 3) & 0xFF, 
+            (color >> 8 * 2) & 0xFF, 
+            (color >> 8 * 1) & 0xFF, 
+            (color >> 8 * 0) & 0xFF
+        )
+
+    def blend_colors(self, c1: Iterable[int], c2: Iterable[int]) -> tuple[int]:
+        a2, *_ = c2
+        return self.pack_rgb(
+            self._mix_components(comp_1, comp_2, a2) for comp_1, comp_2 in zip(c1, c2, strict = True)
+        )
+        
     @property
     def pixel_data(self) -> list[int]:
         return self.image
@@ -45,7 +62,10 @@ class Image:
     def set_color(self, row: int, col: int, color: int) -> None:
         if (row < 0 or row >= self.width or col < 0 or col >= self.height):
             return
-        self.image[col * self.width + row] = color
+        self.image[col * self.width + row] = self.blend_colors(
+            self.unpack_color(self.image[col * self.width + row]), 
+            self.unpack_color(color)
+        )
 
     def image_view(self) -> Generator[int, None, None]:
         for j in range(self.height):
@@ -82,7 +102,7 @@ class Image:
         return True
     
     @staticmethod
-    def _read_ppm_file(file: str) -> Generator[int, None, None]:
+    def _read_ppm_file(file: str) -> Generator[list[int], None, None]:
          with open(file, "r") as f:
             # Skip the P3 header.
             next(f)
@@ -92,6 +112,10 @@ class Image:
             next(f)
             for pixel in f:
                 yield [int(x) for x in pixel.split(" ")]
+
+    @staticmethod
+    def _mix_components(comp_1: int, comp_2: int, alpha: int) -> int:
+        return int(comp_1 + comp_2 * (alpha / 255))
 
 
 @dataclass
