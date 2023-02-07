@@ -21,5 +21,4 @@ See `examples` directory.
 - Triangle interior: https://mathworld.wolfram.com/TriangleInterior.html
 
 # TODO
-1. Tests for triangles.
-2. Colour blending.
+1. Support `png` format.
